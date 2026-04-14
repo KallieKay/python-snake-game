@@ -36,7 +36,7 @@ font = pygame.font.SysFont(None, 30)
 paused=False
 game_over=False
 
-button_width= 80
+button_width= 95
 button_height=30
 
 button_x=WIDTH- button_width -10
@@ -64,7 +64,7 @@ while running:
                 dx, dy =BLOCK_SIZE, 0
                 food = (
                     random.randrange(0, WIDTH, BLOCK_SIZE),
-                    random. randrange(0, HEIGHT, BLOCK_SIZE)
+                    random.randrange(0, HEIGHT, BLOCK_SIZE)
                 )
                 score = 0
                 paused = False
@@ -122,14 +122,27 @@ while running:
     """drawing the pause button"""
     pygame.draw.rect(screen, (0, 0, 255), pause_button)
 
-    button_text=font.render("Pause", True, WHITE)
+    label="Resume" if paused else "Pause"
+    button_text=font.render(label, True, WHITE)
     screen.blit(button_text, (button_x + 10, button_y +5))
+
+    """drawing the restart button"""
+    pygame.draw.rect(screen, (0, 0, 255), restart_button)
+    restart_text=font.render("Restart", True, WHITE)
+    screen.blit(restart_text, (button_x -95, 15))
 
     """showing paused text if the game is paused"""
     if paused:
         pause_text=font.render("PAUSED", True, WHITE)
         screen.blit(pause_text, (WIDTH//2-50, HEIGHT//2))
 
+    """Game over screen"""
+    if game_over:
+        over_text=font.render("GAME OVER", True, RED)
+        screen.blit(over_text, (WIDTH//2 -80, HEIGHT//2))
+
+        sub_text = font.render("CLICK RESTART", True, WHITE)
+        screen.blit(sub_text, (WIDTH//2-90, HEIGHT//2+30))
     pygame.display.update()
     clock.tick(10)
 
