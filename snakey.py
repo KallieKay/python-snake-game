@@ -34,6 +34,7 @@ font = pygame.font.SysFont(None, 30)
 
 """adding pause variables + button """
 paused=False
+game_over=False
 
 button_width= 80
 button_height=30
@@ -42,6 +43,7 @@ button_x=WIDTH- button_width -10
 button_y=10
 
 pause_button=pygame.Rect(button_x, button_y, button_width, button_height)
+restart_button=pygame.Rect(button_x -100, 10, 80, 30)
 
 running = True
 while running:
@@ -53,9 +55,20 @@ while running:
             running = False
 
         if event.type==pygame.MOUSEBUTTONDOWN:
-            if pause_button.collidepoint(event.pos):
+            if pause_button.collidepoint(event.pos) and not game_over:
                 paused=not paused
 
+            if restart_button.collidepoint(event.pos):
+                """reset game"""
+                snake = [(100, 100), (90, 100), (80, 100)]
+                dx, dy =BLOCK_SIZE, 0
+                food = (
+                    random.randrange(0, WIDTH, BLOCK_SIZE),
+                    random. randrange(0, HEIGHT, BLOCK_SIZE)
+                )
+                score = 0
+                paused = False
+                game_over = False
     # Controls
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] and dy == 0:
@@ -68,7 +81,7 @@ while running:
         dx, dy = BLOCK_SIZE, 0
 
     """stop movement when paused"""
-    if not paused:
+    if not paused and not game_over:
         # Move snake
         head = snake[0]
         new_head = (head[0] + dx, head[1] + dy)
@@ -89,11 +102,11 @@ while running:
             new_head[0] < 0 or new_head[0] >= WIDTH or
             new_head[1] < 0 or new_head[1] >= HEIGHT
         ):
-            running = False
+            game_over=True
 
         # Self collision
         if new_head in snake[1:]:
-            running = False
+            game_over=True
 
     # Draw food
     pygame.draw.rect(screen, RED, (*food, BLOCK_SIZE, BLOCK_SIZE))
